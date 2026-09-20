@@ -1,6 +1,7 @@
 /* Carnet Bouzelmate Hicham — service worker
-   Change CACHE à chaque mise à jour de l'app pour forcer le rafraîchissement. */
-const CACHE = 'carnet-bouzelmate-v3';
+   La page passe toujours par le réseau d'abord : une mise à jour est vue
+   dès qu'il y a du réseau, le cache ne sert qu'hors connexion. */
+const CACHE = 'carnet-bouzelmate-v4';
 
 const SHELL = [
   './',
@@ -16,7 +17,8 @@ const SHELL = [
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE)
-      .then(c => c.addAll(SHELL))
+      /* cache:'reload' contourne le cache HTTP : jamais d'ancienne version à l'installation */
+      .then(c => c.addAll(SHELL.map(u => new Request(u, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });
@@ -29,13 +31,30 @@ self.addEventListener('activate', e => {
   );
 });
 
+function networkFirst(req) {
+  return fetch(req, { cache: 'no-store' })
+    .then(res => {
+      if (res && res.ok) {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+      }
+      return res;
+    })
+    .catch(() => caches.match(req).then(hit => hit || caches.match('./index.html')));
+}
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-
   const url = new URL(req.url);
 
-  /* Météo et polices : le réseau d'abord, le cache en secours. */
+  /* La page (navigation ou index.html) : réseau d'abord. */
+  if (req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('.html')) {
+    e.respondWith(networkFirst(req));
+    return;
+  }
+
+  /* Météo et polices : réseau d'abord, dernière valeur connue hors ligne. */
   if (url.hostname.indexOf('open-meteo.com') !== -1 ||
       url.hostname.indexOf('fonts.googleapis.com') !== -1 ||
       url.hostname.indexOf('fonts.gstatic.com') !== -1) {
@@ -51,7 +70,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  /* L'app elle-même : le cache d'abord, pour marcher sans réseau dans la parcelle. */
+  /* Icônes, manifeste : le cache d'abord, ils changent rarement. */
   e.respondWith(
     caches.match(req).then(hit => hit || fetch(req).then(res => {
       if (res && res.status === 200 && res.type === 'basic') {
@@ -59,6 +78,6 @@ self.addEventListener('fetch', e => {
         caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
       }
       return res;
-    }).catch(() => caches.match('./index.html')))
+    }))
   );
 });

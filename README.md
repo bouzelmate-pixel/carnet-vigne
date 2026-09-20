@@ -53,14 +53,16 @@ sans barre de navigateur, et continue de fonctionner sans réseau.
 
 ## Mettre à jour l'app
 
-Remplacer `index.html`, puis **changer le numéro de version** en tête de `sw.js` :
+Remplacer `index.html` dans le dépôt. C'est tout : la page passe toujours
+par le réseau d'abord, donc les téléphones voient la nouvelle version dès
+qu'ils ont du réseau. Le cache ne sert qu'à ouvrir l'app sans connexion.
+
+Changer le numéro de version en tête de `sw.js` reste utile quand on modifie
+les icônes ou le manifeste :
 
 ```js
-const CACHE = 'carnet-bouzelmate-v3';   // v2 → v3
+const CACHE = 'carnet-bouzelmate-v5';   // v4 → v5
 ```
-
-Sans ce changement, les téléphones continuent d'afficher l'ancienne version
-en cache. C'est l'erreur classique.
 
 ## Vocabulaire des données
 
