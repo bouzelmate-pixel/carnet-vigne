@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2E0F3A">
+<meta name="description" content="Carnet de terrain pour la vigne de table : calcul de la dose a verser dans la cuve, registre tracable, meteo et transmission au bureau.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-64.png" sizes="64x64">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Carnet">
+<style>
+  :root{color-scheme:light dark;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>Carnet Bouzelmate Hicham</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap">
+</head>
+<body>
+<style>
+/* ═════════ tokens : clair ═════════ */
+:root{
+  --s:1;
+  --t-xxs:calc(11px * var(--s));
+  --t-xs:calc(12.5px * var(--s));
+  --t-sm:calc(14px * var(--s));
+  --t-md:calc(16px * var(--s));
+  --t-lg:calc(18.5px * var(--s));
+  --t-xl:calc(21px * var(--s));
+  --t-num:calc(50px * var(--s));
+  --t-stat:calc(21px * var(--s));
+
+  --bg:#F6F1F9; --app:#FBF8FC; --surface:#FFFFFF; --surface-2:#F1E9F6;
+  --ink:#2A1C33; --ink-2:#655471; --ink-3:#8E7E9A;
+  --line:#E5D9EE; --line-strong:#D2BFE0;
+  --violet:#73278F; --violet-soft:#9A4EC0; --violet-wash:#F0E3F7;
+  --aubergine:#2E0F3A; --pruine:#C9B6DC; --muscat:#B07C1E; --muscat-wash:#FAF0DC;
+  --ok:#3A7340; --ok-wash:#E4F1E5; --warn:#A96C14; --warn-wash:#FBF0DA;
+  --danger:#A93520; --danger-wash:#FBE7E2; --eau:#2F7594;
+  --shadow-s:0 1px 2px rgba(46,15,58,.06), 0 2px 8px rgba(46,15,58,.05);
+  --shadow-m:0 8px 28px rgba(46,15,58,.14);
+  --shadow-hero:0 14px 40px rgba(88,26,116,.32);
+  --radius:16px;
+  --f-display:'Bricolage Grotesque','Figtree',system-ui,sans-serif;
+  --f-body:'Figtree',system-ui,-apple-system,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+}
+[dir="rtl"]{
+  --f-display:'Tajawal','Bricolage Grotesque',system-ui,sans-serif;
+  --f-body:'Tajawal','Figtree',system-ui,sans-serif;
+}
+/* ═════════ tokens : sombre ═════════ */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#110718; --app:#1A0B22; --surface:#241031; --surface-2:#30173F;
+    --ink:#F4EAF9; --ink-2:#C2ACCF; --ink-3:#9884A6;
+    --line:#3A2049; --line-strong:#4E2D62;
+    --violet:#C27DE2; --violet-soft:#D49BEE; --violet-wash:#31163F;
+    --aubergine:#0D0512; --pruine:#B79ECA; --muscat:#E5BB63; --muscat-wash:#3A2A12;
+    --ok:#85C481; --ok-wash:#1D3320; --warn:#E3B25C; --warn-wash:#382A12;
+    --danger:#F49480; --danger-wash:#3B1A14; --eau:#6FB4D0;
+    --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+    --shadow-m:0 8px 28px rgba(0,0,0,.5);
+    --shadow-hero:0 14px 40px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#110718; --app:#1A0B22; --surface:#241031; --surface-2:#30173F;
+  --ink:#F4EAF9; --ink-2:#C2ACCF; --ink-3:#9884A6;
+  --line:#3A2049; --line-strong:#4E2D62;
+  --violet:#C27DE2; --violet-soft:#D49BEE; --violet-wash:#31163F;
+  --aubergine:#0D0512; --pruine:#B79ECA; --muscat:#E5BB63; --muscat-wash:#3A2A12;
+  --ok:#85C481; --ok-wash:#1D3320; --warn:#E3B25C; --warn-wash:#382A12;
+  --danger:#F49480; --danger-wash:#3B1A14; --eau:#6FB4D0;
+  --shadow-s:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-m:0 8px 28px rgba(0,0,0,.5);
+  --shadow-hero:0 14px 40px rgba(0,0,0,.55);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--f-body);font-size:var(--t-md);line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--violet-soft);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ═════════ coquille ═════════ */
+.app{
+  max-width:480px;margin:0 auto;min-height:100%;
+  background:var(--app);box-shadow:0 0 0 1px var(--line);
+  display:flex;flex-direction:column;
+}
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:40;
+  background:linear-gradient(150deg,var(--aubergine) 0%, #4A1560 55%, #6A237F 100%);
+  color:#F6EDFA;padding:13px 15px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.brand{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
+.brand h1{
+  font-family:var(--f-display);font-weight:800;
+  font-size:calc(17.5px * var(--s));letter-spacing:-.015em;
+  margin:0;line-height:1.15;color:#FCF7FE;
+}
+.brand p{
+  margin:1px 0 0;font-size:calc(10.5px * var(--s));letter-spacing:.1em;
+  text-transform:uppercase;color:var(--pruine);font-weight:600;
+}
+[dir="rtl"] .brand p{letter-spacing:0}
+.mark{width:34px;height:34px;flex:none}
+.hbtn{
+  border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.1);
+  color:#F6EDFA;border-radius:999px;padding:6px 10px;
+  font-size:var(--t-xs);font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn .dot{width:7px;height:7px;border-radius:50%;background:var(--pruine)}
+
+main{flex:1;padding:15px 15px 112px}
+.view{display:flex;flex-direction:column;gap:13px}
+
+.tabbar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:min(100%,480px);z-index:50;
+  background:color-mix(in srgb, var(--surface) 93%, transparent);
+  backdrop-filter:blur(14px);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(5,1fr);
+  padding:7px 5px calc(7px + env(safe-area-inset-bottom,0px));
+}
+.tab{
+  border:0;background:none;cursor:pointer;padding:6px 2px 5px;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--ink-3);font-size:calc(10.5px * var(--s));font-weight:700;
+  transition:color .16s, background .16s;
+}
+.tab svg{width:calc(22px * var(--s));height:calc(22px * var(--s));stroke-width:1.7}
+.tab[aria-selected="true"]{color:var(--violet);background:var(--violet-wash)}
+
+/* ═════════ pièces ═════════ */
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px;box-shadow:var(--shadow-s);
+}
+.card.flat{box-shadow:none;background:var(--surface-2);border-color:transparent}
+.eyebrow{
+  font-size:calc(11px * var(--s));font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+[dir="rtl"] .eyebrow{letter-spacing:0}
+h2.sec{font-family:var(--f-display);font-weight:700;font-size:var(--t-lg);margin:0;text-wrap:balance}
+h3.sub{font-family:var(--f-display);font-weight:700;font-size:var(--t-md);margin:0}
+.muted{color:var(--ink-2);font-size:var(--t-sm);margin:0}
+.tiny{font-size:var(--t-xs);color:var(--ink-3);margin:0;line-height:1.5}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:9px}
+.spread{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.chip{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;
+  padding:4px 10px;font-size:var(--t-xxs);font-weight:700;
+  border:1px solid transparent;white-space:nowrap;
+}
+.chip.noir{background:var(--violet-wash);color:var(--violet);border-color:var(--line-strong)}
+.chip.blanc{background:var(--muscat-wash);color:var(--muscat);border-color:color-mix(in srgb,var(--muscat) 30%,transparent)}
+.chip.ok{background:var(--ok-wash);color:var(--ok)}
+.chip.warn{background:var(--warn-wash);color:var(--warn)}
+.chip.danger{background:var(--danger-wash);color:var(--danger)}
+.chip.demo{background:var(--surface-2);color:var(--ink-3);border-color:var(--line);font-weight:600}
+
+label.field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+label.field > span{
+  font-size:var(--t-xxs);font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+[dir="rtl"] label.field > span{letter-spacing:0;text-transform:none}
+input[type="text"],input[type="number"],select,textarea{
+  width:100%;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:11px;padding:11px 12px;font-family:var(--f-mono);
+  font-size:var(--t-md);font-variant-numeric:tabular-nums;
+}
+textarea{font-family:var(--f-body);resize:vertical;min-height:66px}
+input:focus,select:focus,textarea:focus{border-color:var(--violet-soft);outline:none}
+select{font-family:var(--f-body);cursor:pointer}
+
+.btn{
+  border:0;cursor:pointer;border-radius:12px;padding:13px 16px;
+  font-family:var(--f-display);font-weight:700;font-size:var(--t-md);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .12s, filter .16s;
+}
+.btn:active{transform:translateY(1px) scale(.995)}
+.btn-primary{background:linear-gradient(140deg,#8B33B2,#5F1D80);color:#fff;box-shadow:var(--shadow-hero);width:100%}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line-strong)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-sm{padding:9px 13px;font-size:var(--t-sm);border-radius:10px}
+
+.seg{display:flex;background:var(--surface-2);border-radius:12px;padding:3px;gap:3px}
+.seg button{
+  flex:1;border:0;background:none;cursor:pointer;border-radius:9px;padding:9px 6px;
+  font-size:var(--t-sm);font-weight:600;color:var(--ink-2);
+}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--violet);box-shadow:var(--shadow-s)}
+
+/* ═════════ météo ═════════ */
+.meteo{
+  background:linear-gradient(140deg,#20455C,#2F7594 70%,#3C90AF);
+  color:#EAF5FA;border-radius:var(--radius);padding:14px 15px;
+  box-shadow:var(--shadow-m);position:relative;overflow:hidden;
+}
+.meteo::after{
+  content:"";position:absolute;inset-inline-end:-30px;top:-40px;width:150px;height:150px;
+  background:radial-gradient(circle at 40% 40%, rgba(255,255,255,.22), transparent 62%);
+}
+.meteo .mtop{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.meteo .deg{
+  font-family:var(--f-mono);font-size:calc(38px * var(--s));font-weight:600;
+  line-height:1;font-variant-numeric:tabular-nums;
+}
+.meteo .mlab{font-size:var(--t-xxs);letter-spacing:.11em;text-transform:uppercase;color:#B9DCEA;font-weight:700;margin:0}
+[dir="rtl"] .meteo .mlab{letter-spacing:0}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:13px;background:rgba(255,255,255,.2);border-radius:11px;overflow:hidden;position:relative;z-index:1}
+.mgrid div{background:rgba(14,44,60,.5);padding:9px 8px}
+.mgrid .k{font-size:calc(9.5px * var(--s));letter-spacing:.09em;text-transform:uppercase;color:#B9DCEA;font-weight:700}
+[dir="rtl"] .mgrid .k{letter-spacing:0}
+.mgrid .v{font-family:var(--f-mono);font-size:var(--t-md);margin-top:2px;font-variant-numeric:tabular-nums}
+.verdict{
+  margin-top:11px;border-radius:10px;padding:9px 12px;font-size:var(--t-sm);font-weight:700;
+  display:flex;align-items:center;gap:8px;position:relative;z-index:1;
+}
+.verdict.go{background:rgba(133,196,129,.22);color:#D8F2D6}
+.verdict.mid{background:rgba(227,178,92,.22);color:#F7E3BE}
+.verdict.no{background:rgba(244,148,128,.24);color:#FBDDD5}
+
+/* ═════════ armoire ═════════ */
+.armoire{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.prod{
+  text-align:start;cursor:pointer;border-radius:13px;padding:11px;
+  border:1.5px solid var(--line);background:var(--surface);
+  display:flex;flex-direction:column;gap:5px;transition:border-color .15s, background .15s;
+}
+.prod:hover{border-color:var(--line-strong);background:var(--surface-2)}
+.prod[aria-pressed="true"]{border-color:var(--violet);background:var(--violet-wash);box-shadow:inset 0 0 0 1px var(--violet)}
+.prod .pn{font-weight:700;font-size:var(--t-sm);line-height:1.25}
+.prod .pm{font-size:var(--t-xxs);color:var(--ink-3);line-height:1.3}
+.prod .pd{font-family:var(--f-mono);font-size:var(--t-xs);color:var(--violet);font-weight:500}
+.prod .stripe{height:4px;border-radius:2px;width:28px}
+
+/* ═════════ résultat ═════════ */
+.result{
+  position:relative;overflow:hidden;border-radius:var(--radius);
+  background:linear-gradient(145deg,#571B74 0%, #7A2E9D 48%, #9C4BBE 100%);
+  color:#fff;padding:18px 17px;box-shadow:var(--shadow-hero);
+}
+.result::after{
+  content:"";position:absolute;inset-inline-end:-42px;top:-34px;width:172px;height:172px;
+  background:radial-gradient(circle at 34% 34%, rgba(255,255,255,.26), transparent 62%);
+  pointer-events:none;
+}
+.result .lab{font-size:var(--t-xxs);letter-spacing:.13em;text-transform:uppercase;color:var(--pruine);font-weight:800;margin:0}
+[dir="rtl"] .result .lab{letter-spacing:0;text-transform:none}
+.bignum{
+  font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums;
+  font-size:var(--t-num);line-height:1;letter-spacing:-.03em;margin:7px 0 2px;
+  display:flex;align-items:baseline;gap:8px;
+}
+.bignum small{font-size:calc(19px * var(--s));font-weight:500;opacity:.85;letter-spacing:0}
+.result .into{margin:0;font-size:var(--t-sm);color:#EEDDF6}
+.metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:15px;
+  background:rgba(255,255,255,.18);border-radius:11px;overflow:hidden;
+}
+.metrics div{background:rgba(42,10,56,.42);padding:9px 8px}
+.metrics .k{font-size:calc(9.5px * var(--s));letter-spacing:.09em;text-transform:uppercase;color:var(--pruine);font-weight:800}
+[dir="rtl"] .metrics .k{letter-spacing:0;text-transform:none}
+.metrics .v{font-family:var(--f-mono);font-size:var(--t-md);margin-top:2px;font-variant-numeric:tabular-nums}
+
+.locked .bignum,.locked .into,.locked .metrics{filter:blur(10px);opacity:.5;user-select:none}
+.lockface{
+  position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:7px;text-align:center;padding:16px;
+  background:rgba(35,8,48,.55);backdrop-filter:blur(2px);
+}
+.lockface p{margin:0;font-size:var(--t-sm);color:#F0E1F8;max-width:260px;line-height:1.45}
+.lockface strong{font-family:var(--f-display);font-size:var(--t-md);color:#fff}
+
+/* ═════════ porte de validation ═════════ */
+.gate{border:2px solid var(--warn);background:var(--warn-wash);border-radius:var(--radius);padding:15px}
+.gate h3{font-family:var(--f-display);font-size:var(--t-md);margin:0 0 3px;color:var(--ink)}
+.bidon{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px 0;display:flex;gap:12px;align-items:center}
+.bidon .glyph{width:40px;height:50px;border-radius:6px;flex:none;border:2px solid var(--line-strong);position:relative;background:var(--surface-2)}
+.bidon .glyph::before{content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:16px;height:8px;border-radius:2px 2px 0 0;background:var(--line-strong)}
+.bidon .glyph .band{position:absolute;left:0;right:0;top:15px;height:13px}
+.codebox{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  font-family:var(--f-mono);font-weight:600;font-size:calc(26px * var(--s));
+  letter-spacing:.22em;background:var(--surface);border:2px dashed var(--line-strong);
+  border-radius:12px;padding:10px;color:var(--violet);margin-bottom:4px;
+}
+#gateInput{
+  font-family:var(--f-mono);font-size:calc(24px * var(--s));text-align:center;
+  letter-spacing:.2em;text-transform:uppercase;padding:12px;
+}
+#gateInput.good{border-color:var(--ok);background:var(--ok-wash);color:var(--ok)}
+.check{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:var(--t-sm);line-height:1.45;margin-top:11px}
+.check input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--violet);cursor:pointer}
+.btn-confirm{background:linear-gradient(140deg,var(--ok),#2B5730);color:#fff;width:100%;margin-top:12px;box-shadow:0 8px 22px rgba(58,115,64,.3)}
+.btn-confirm:disabled{background:var(--surface-2);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+
+.alert{border-radius:12px;padding:12px 13px;display:flex;gap:10px;align-items:flex-start;font-size:var(--t-sm);line-height:1.45}
+.alert.block{background:var(--danger-wash);border:2px solid var(--danger);color:var(--ink)}
+.alert b{color:var(--danger)}
+.alert .ic{font-family:var(--f-display);font-weight:800;flex:none}
+
+/* ═════════ parcelles ═════════ */
+.plan{width:100%;height:auto;border-radius:12px;display:block;background:var(--surface-2)}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{background:var(--surface-2);border-radius:12px;padding:11px}
+.stat .k{font-size:var(--t-xxs);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:800}
+[dir="rtl"] .stat .k{letter-spacing:0;text-transform:none}
+.stat .v{font-family:var(--f-mono);font-size:var(--t-stat);margin-top:1px;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:var(--t-xs);color:var(--ink-2)}
+
+/* ═════════ eau ═════════ */
+.bassin{position:relative;height:92px;border-radius:12px;overflow:hidden;border:1.5px solid var(--line-strong);background:var(--surface-2)}
+.bassin .water{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#5BA8C4,#2E6E8C);transition:height .4s ease}
+.bassin .lvl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:calc(28px * var(--s));font-weight:600;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5);font-variant-numeric:tabular-nums}
+input[type="range"]{width:100%;accent-color:var(--violet);cursor:pointer;padding:0}
+.puits{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.puit{background:var(--surface-2);border-radius:12px;padding:11px 8px;text-align:center;border:2px solid transparent;cursor:pointer}
+.puit[data-on="1"]{border-color:var(--ok);background:var(--ok-wash)}
+.puit .n{font-family:var(--f-display);font-weight:700;font-size:var(--t-sm)}
+.puit .s{font-size:var(--t-xxs);color:var(--ink-2);margin-top:2px}
+
+/* ═════════ journal ═════════ */
+.entry{
+  background:var(--surface);border:1px solid var(--line);
+  border-inline-start:4px solid var(--violet);
+  border-radius:0 12px 12px 0;padding:12px;
+}
+[dir="rtl"] .entry{border-radius:12px 0 0 12px}
+.entry.irr{border-inline-start-color:var(--eau)}
+.entry.tache{border-inline-start-color:var(--muscat)}
+.entry.note{border-inline-start-color:var(--ink-3)}
+.entry .when{font-family:var(--f-mono);font-size:var(--t-xxs);color:var(--ink-3)}
+.entry .what{font-weight:700;font-size:var(--t-sm);margin:3px 0}
+.entry .det{font-size:var(--t-xs);color:var(--ink-2);line-height:1.5}
+.entry .sig{font-size:var(--t-xxs);color:var(--ink-3);margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);font-family:var(--f-mono)}
+.entry img.shot{width:100%;border-radius:9px;margin-top:8px;display:block;border:1px solid var(--line)}
+.entry audio{width:100%;margin-top:8px;display:block}
+.empty{text-align:center;padding:28px 14px;color:var(--ink-3);font-size:var(--t-sm)}
+
+.capt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.capt .btn{width:100%}
+.btn-rec{background:linear-gradient(140deg,#C0392B,#8E2A20);color:#fff}
+.btn-rec.on{animation:pulse 1.1s infinite}
+@keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+.preview{margin-top:9px;display:flex;flex-direction:column;gap:8px}
+.preview img{width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+.preview audio{width:100%}
+
+/* ═════════ bureau ═════════ */
+.doc{width:100%;text-align:start;cursor:pointer;border-radius:13px;padding:14px;border:1.5px solid var(--line);background:var(--surface);display:flex;gap:12px;align-items:center}
+.doc:hover{border-color:var(--violet);background:var(--violet-wash)}
+.doc .ico{width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;background:var(--violet-wash);color:var(--violet)}
+.doc .ico svg{width:21px;height:21px;stroke-width:1.8}
+.doc .t{font-family:var(--f-display);font-weight:700;font-size:var(--t-sm)}
+.doc .d{font-size:var(--t-xxs);color:var(--ink-2);line-height:1.35}
+.doc .arr{margin-inline-start:auto;color:var(--ink-3);font-size:var(--t-lg)}
+.out{background:var(--aubergine);color:#E9DCF0;border-radius:12px;padding:14px;font-family:var(--f-mono);font-size:var(--t-xs);line-height:1.65;white-space:pre-wrap;max-height:300px;overflow:auto;border:1px solid var(--line-strong);direction:ltr;text-align:left}
+
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:90;
+  background:var(--aubergine);color:#fff;padding:11px 17px;border-radius:999px;
+  font-size:var(--t-sm);font-weight:600;box-shadow:var(--shadow-m);
+  opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-5px)}
+.footnote{font-size:var(--t-xxs);color:var(--ink-3);line-height:1.55;text-align:center;padding:4px 6px 0}
+</style>
+
+<div class="app" id="app" dir="ltr">
+
+  <header class="topbar">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M22 8.6c2.6-3.2 6.6-3.6 8.8-2.2-.4 3-3.2 5.6-6.4 5.4-1.4-.1-2.2-1.4-2.4-3.2z" fill="#7FB463"/>
+      <path d="M21.5 10c0-3 1.6-5.2 4.6-6.2" stroke="#8BBF6A" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+      <g fill="#C9B6DC">
+        <circle cx="14.5" cy="15.5" r="4.1"/><circle cx="23" cy="15.5" r="4.1"/>
+        <circle cx="10.5" cy="22.4" r="4.1"/><circle cx="18.8" cy="22.4" r="4.1"/><circle cx="27" cy="22.4" r="4.1"/>
+        <circle cx="14.6" cy="29.2" r="4.1"/><circle cx="22.9" cy="29.2" r="4.1"/>
+        <circle cx="18.8" cy="35.4" r="4.1"/>
+      </g>
+      <g fill="#9A4EC0">
+        <circle cx="14.5" cy="15.5" r="3.5"/><circle cx="23" cy="15.5" r="3.5"/>
+        <circle cx="10.5" cy="22.4" r="3.5"/><circle cx="18.8" cy="22.4" r="3.5"/><circle cx="27" cy="22.4" r="3.5"/>
+        <circle cx="14.6" cy="29.2" r="3.5"/><circle cx="22.9" cy="29.2" r="3.5"/>
+        <circle cx="18.8" cy="35.4" r="3.5"/>
+      </g>
+    </svg>
+    <div class="brand">
+      <div>
+        <h1 data-i18n="app.name">Carnet Bouzelmate Hicham</h1>
+        <p data-i18n="app.sub">Vigne de table · 22 ha</p>
+      </div>
+    </div>
+    <button class="hbtn" id="langBtn" type="button">ع</button>
+    <button class="hbtn" id="sizeBtn" type="button">A</button>
+    <button class="hbtn" id="roleBtn" type="button"><span class="dot"></span><span id="roleLabel">Responsable</span></button>
+  </header>
+
+  <main>
+
+    <!-- ════════ CUVE ════════ -->
+    <section class="view" id="v-cuve">
+
+      <div class="meteo" id="meteo">
+        <div class="mtop">
+          <div class="deg" id="mTemp">27°</div>
+          <div>
+            <p class="mlab" data-i18n="meteo.title">Conditions du moment</p>
+            <p style="margin:2px 0 0;font-size:var(--t-sm)" id="mPlace">Exemple — appuyez pour localiser</p>
+          </div>
+          <button class="hbtn" id="mBtn" type="button" style="margin-inline-start:auto;position:relative;z-index:1" data-i18n="meteo.locate">Localiser</button>
+        </div>
+        <div class="mgrid">
+          <div><div class="k" data-i18n="meteo.wind">Vent</div><div class="v" id="mWind">11 km/h</div></div>
+          <div><div class="k" data-i18n="meteo.hum">Humidité</div><div class="v" id="mHum">48 %</div></div>
+          <div><div class="k" data-i18n="meteo.rain">Pluie</div><div class="v" id="mRain">0 mm</div></div>
+        </div>
+        <div class="verdict go" id="mVerdict"><span>✓</span><span data-i18n="meteo.ok">Conditions favorables au traitement</span></div>
+      </div>
+
+      <div class="card col">
+        <div class="spread">
+          <div>
+            <p class="eyebrow" data-i18n="step.1">Étape 1</p>
+            <h2 class="sec" data-i18n="cuve.q">Quel produit dans la cuve&nbsp;?</h2>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="openGalerie" type="button" data-i18n="galerie">Galerie</button>
+        </div>
+        <p class="tiny" data-i18n="armoire.note">Mon armoire — les produits de l'exploitation.</p>
+        <div class="armoire" id="armoire"></div>
+      </div>
+
+      <div class="card col" style="gap:12px">
+        <div>
+          <p class="eyebrow" data-i18n="step.2">Étape 2</p>
+          <h2 class="sec" data-i18n="cuve.mat">Le matériel et la surface</h2>
+        </div>
+        <div class="row">
+          <label class="field"><span data-i18n="f.cuve">Cuve</span>
+            <select id="cuve">
+              <option value="500">500 L</option><option value="1000" selected>1000 L</option>
+              <option value="1500">1500 L</option><option value="2000">2000 L</option>
+            </select></label>
+          <label class="field"><span data-i18n="f.volha">Bouillie / ha</span>
+            <input type="number" id="volHa" value="600" min="50" step="50" inputmode="numeric"></label>
+        </div>
+
+        <div class="seg" role="group">
+          <button type="button" id="modeHa" aria-pressed="true" data-i18n="mode.ha">Surface en ha</button>
+          <button type="button" id="modeRangs" aria-pressed="false" data-i18n="mode.rangs">Compter les rangs</button>
+        </div>
+
+        <div id="boxHa" class="row">
+          <label class="field"><span data-i18n="f.surf">Surface à traiter</span>
+            <input type="number" id="surfHa" value="10" min="0.1" step="0.5" inputmode="decimal"></label>
+          <label class="field"><span data-i18n="f.parc">Parcelle</span>
+            <select id="parcelle"><option value="P1">P1 — 10 ha</option><option value="P2">P2 — 12 ha</option></select></label>
+        </div>
+
+        <div id="boxRangs" hidden style="display:none">
+          <div class="row">
+            <label class="field"><span data-i18n="f.nb">Nb de rangs</span><input type="number" id="nbRangs" value="40" min="1" inputmode="numeric"></label>
+            <label class="field"><span data-i18n="f.lg">Longueur (m)</span><input type="number" id="lgRang" value="250" min="1" inputmode="numeric"></label>
+          </div>
+          <p class="tiny" id="rangsCalc" style="margin-top:8px"></p>
+        </div>
+
+        <p class="tiny" data-i18n="tip.vol">Le volume de bouillie/ha se mesure une fois par saison, à l'eau claire, sur quelques rangs mesurés. Il change avec la vitesse, la pression, les buses et le feuillage.</p>
+      </div>
+
+      <div id="blockAlert"></div>
+
+      <div>
+        <p class="eyebrow" style="margin-inline-start:2px" data-i18n="step.3">Étape 3 — à verser dans la cuve</p>
+        <div class="result" id="result">
+          <p class="lab" id="resProd">—</p>
+          <div class="bignum"><span id="resQty">0</span><small id="resUnit">L</small></div>
+          <p class="into" id="resInto"></p>
+          <div class="metrics">
+            <div><div class="k" data-i18n="m.ha">Ha / cuve</div><div class="v" id="mHa">—</div></div>
+            <div><div class="k" data-i18n="m.cuves">Cuves</div><div class="v" id="mCuves">—</div></div>
+            <div><div class="k" data-i18n="m.tot">Total produit</div><div class="v" id="mTot">—</div></div>
+          </div>
+          <div class="lockface" id="lockface" hidden>
+            <strong data-i18n="lock.t">Résultat verrouillé</strong>
+            <p data-i18n="lock.p">Confirmez le bidon que vous avez en main pour afficher la quantité à verser.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="gate" id="gate" hidden>
+        <h3 data-i18n="gate.t">Vous avez bien ce produit en main&nbsp;?</h3>
+        <p class="tiny" data-i18n="gate.p">La confirmation est horodatée à votre nom et inscrite au registre.</p>
+        <div class="bidon">
+          <div class="glyph"><div class="band" id="bidonBand"></div></div>
+          <div style="min-width:0">
+            <div style="font-weight:700;font-size:var(--t-md);line-height:1.25" id="gateName">—</div>
+            <div class="tiny" id="gateDose">—</div>
+          </div>
+        </div>
+        <p class="tiny" style="margin-bottom:6px" data-i18n="gate.ask">Recopiez le code lu sur l'étiquette du bidon&nbsp;:</p>
+        <div class="codebox" id="codebox">····</div>
+        <input type="text" id="gateInput" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="4" placeholder="····" aria-label="Code du produit">
+        <label class="check">
+          <input type="checkbox" id="gateCheck">
+          <span data-i18n="gate.check">J'ai lu l'étiquette, je porte les EPI indiqués et je respecte le délai avant récolte.</span>
+        </label>
+        <button class="btn btn-confirm" id="gateBtn" type="button" disabled data-i18n="gate.btn">Je confirme et je verse</button>
+      </div>
+
+      <p class="footnote" data-i18n="footnote">L'application calcule à partir de la fiche produit. Elle ne prescrit pas : la dose qui fait foi reste celle de l'étiquette.</p>
+    </section>
+
+    <!-- ════════ PARCELLES ════════ -->
+    <section class="view" id="v-parcelles" hidden>
+      <div class="card">
+        <p class="eyebrow" data-i18n="parc.eyebrow">Domaine</p>
+        <h2 class="sec" data-i18n="parc.t">Deux parcelles, un seul bassin</h2>
+        <div class="statgrid" style="margin-top:12px">
+          <div class="stat"><div class="k">Parcelle 1</div><div class="v">10 <small>ha</small></div></div>
+          <div class="stat"><div class="k">Parcelle 2</div><div class="v">12 <small>ha</small></div></div>
+          <div class="stat"><div class="k" data-i18n="parc.puits">Puits</div><div class="v">3</div></div>
+          <div class="stat"><div class="k" data-i18n="parc.bassin">Bassin</div><div class="v">1</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="spread" style="margin-bottom:10px">
+          <h3 class="sub" data-i18n="parc.dispo">Disposition des variétés</h3>
+          <span class="chip demo" data-i18n="aconfirmer">à confirmer</span>
+        </div>
+        <svg class="plan" viewBox="0 0 320 190" role="img" aria-label="Plan : raisin blanc en périphérie, noir au centre, bordure de fruitiers, bassin au milieu">
+          <g fill="#7FB463" opacity="0.85">
+            <circle cx="10" cy="12" r="6"/><circle cx="46" cy="9" r="6"/><circle cx="82" cy="12" r="6"/><circle cx="118" cy="9" r="6"/>
+            <circle cx="154" cy="12" r="6"/><circle cx="190" cy="9" r="6"/><circle cx="226" cy="12" r="6"/><circle cx="262" cy="9" r="6"/><circle cx="300" cy="12" r="6"/>
+            <circle cx="10" cy="178" r="6"/><circle cx="46" cy="181" r="6"/><circle cx="82" cy="178" r="6"/><circle cx="118" cy="181" r="6"/>
+            <circle cx="154" cy="178" r="6"/><circle cx="190" cy="181" r="6"/><circle cx="226" cy="178" r="6"/><circle cx="262" cy="181" r="6"/><circle cx="300" cy="178" r="6"/>
+            <circle cx="8" cy="52" r="6"/><circle cx="8" cy="95" r="6"/><circle cx="8" cy="138" r="6"/>
+            <circle cx="312" cy="52" r="6"/><circle cx="312" cy="95" r="6"/><circle cx="312" cy="138" r="6"/>
+          </g>
+          <g stroke-linecap="round" stroke-width="7">
+            <line x1="30" y1="34" x2="30" y2="156" stroke="#C08A2A"/><line x1="46" y1="34" x2="46" y2="156" stroke="#C08A2A"/>
+            <line x1="62" y1="34" x2="62" y2="156" stroke="#C08A2A"/><line x1="82" y1="34" x2="82" y2="156" stroke="#9A4EC0"/>
+            <line x1="98" y1="34" x2="98" y2="156" stroke="#9A4EC0"/><line x1="114" y1="34" x2="114" y2="156" stroke="#9A4EC0"/>
+            <line x1="130" y1="34" x2="130" y2="156" stroke="#9A4EC0"/><line x1="146" y1="34" x2="146" y2="156" stroke="#9A4EC0"/>
+            <line x1="166" y1="34" x2="166" y2="156" stroke="#C08A2A"/><line x1="182" y1="34" x2="182" y2="156" stroke="#C08A2A"/>
+            <line x1="198" y1="34" x2="198" y2="156" stroke="#C08A2A"/><line x1="218" y1="34" x2="218" y2="156" stroke="#9A4EC0"/>
+            <line x1="234" y1="34" x2="234" y2="156" stroke="#9A4EC0"/><line x1="250" y1="34" x2="250" y2="156" stroke="#9A4EC0"/>
+            <line x1="266" y1="34" x2="266" y2="156" stroke="#9A4EC0"/><line x1="286" y1="34" x2="286" y2="156" stroke="#C08A2A"/>
+          </g>
+          <rect x="140" y="82" width="40" height="26" rx="5" fill="#2F7594"/>
+          <text x="160" y="99" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#fff">bassin</text>
+        </svg>
+        <div class="row" style="margin-top:11px">
+          <span class="chip blanc" data-i18n="leg.blanc">● Blanc — extérieur</span>
+          <span class="chip noir" data-i18n="leg.noir">● Noir — intérieur</span>
+          <span class="chip ok" data-i18n="leg.fruit">● Fruitiers — bordure</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="sub" style="margin-bottom:11px" data-i18n="parc.ecart">Écartement enregistré par parcelle</h3>
+        <div class="row">
+          <label class="field"><span>P1 — 10 ha (m)</span><input type="number" id="ecP1" value="3" min="0.5" step="0.1" inputmode="decimal"></label>
+          <label class="field"><span>P2 — 12 ha (m)</span><input type="number" id="ecP2" value="3" min="0.5" step="0.1" inputmode="decimal"></label>
+        </div>
+        <p class="tiny" style="margin-top:9px" data-i18n="parc.ecartnote">Mesuré une fois au décamètre. Le calcul de cuve l'utilise automatiquement — sur le terrain, il n'y a plus que le nombre de rangs et la longueur à saisir.</p>
+      </div>
+
+      <div class="card">
+        <h3 class="sub" style="margin-bottom:11px" data-i18n="parc.var">Variétés</h3>
+        <div class="col">
+          <div class="card flat spread"><div><div style="font-weight:700">Red Globe</div><div class="tiny" data-i18n="var.noir">Noir · gros calibre · marché local</div></div><span class="chip noir">noir</span></div>
+          <div class="card flat spread"><div><div style="font-weight:700">Muscat d'Italie</div><div class="tiny" data-i18n="var.blanc">Blanc · gros calibre · marché local</div></div><span class="chip blanc">blanc</span></div>
+        </div>
+        <p class="tiny" style="margin-top:9px" data-i18n="var.note">Noms d'exemple — à remplacer par les variétés réelles.</p>
+      </div>
+
+      <div class="card">
+        <h3 class="sub" style="margin-bottom:11px" data-i18n="parc.prot">Protections en place</h3>
+        <div class="col">
+          <div class="card flat spread"><div><div style="font-weight:700" data-i18n="prot.grill">Grillage anti-tempête</div><div class="tiny" data-i18n="prot.grill2">Périmètre complet</div></div><span class="chip ok" data-i18n="pose">posé</span></div>
+          <div class="card flat spread"><div><div style="font-weight:700" data-i18n="prot.bache">Bâches anti-pluie</div><div class="tiny" data-i18n="prot.bache2">Risque de pourriture des grappes</div></div><span class="chip ok" data-i18n="pose">posé</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ EAU ════════ -->
+    <section class="view" id="v-eau" hidden>
+      <div class="card">
+        <p class="eyebrow" data-i18n="eau.eyebrow">Bassin partagé P1 + P2</p>
+        <h2 class="sec" style="margin-bottom:12px" data-i18n="eau.t">Niveau du bassin</h2>
+        <div class="bassin"><div class="water" id="water" style="height:68%"></div><div class="lvl" id="lvlTxt">68 %</div></div>
+        <input type="range" id="lvlRange" min="0" max="100" value="68" style="margin-top:12px" aria-label="Niveau du bassin">
+      </div>
+      <div class="card">
+        <h3 class="sub" style="margin-bottom:11px" data-i18n="eau.puits">Les trois puits</h3>
+        <div class="puits" id="puits">
+          <button class="puit" type="button" data-on="1"><div class="n">1</div><div class="s"></div></button>
+          <button class="puit" type="button" data-on="1"><div class="n">2</div><div class="s"></div></button>
+          <button class="puit" type="button" data-on="0"><div class="n">3</div><div class="s"></div></button>
+        </div>
+        <p class="tiny" style="margin-top:9px" data-i18n="eau.puitsnote">Appuyez sur un puits pour changer son état.</p>
+      </div>
+      <div class="card">
+        <h3 class="sub" style="margin-bottom:11px" data-i18n="eau.energie">Source d'énergie</h3>
+        <div class="seg" role="group">
+          <button type="button" id="enSol" aria-pressed="true" data-i18n="eau.sol">☀ Panneaux solaires</button>
+          <button type="button" id="enGaz" aria-pressed="false" data-i18n="eau.gaz">Bouteilles de gaz</button>
+        </div>
+        <p class="tiny" style="margin-top:9px" id="enNote"></p>
+      </div>
+      <div class="card">
+        <h3 class="sub" style="margin-bottom:11px" data-i18n="eau.noter">Noter un arrosage</h3>
+        <div class="row">
+          <label class="field"><span data-i18n="f.parc">Parcelle</span>
+            <select id="irrParc"><option>P1 — 10 ha</option><option>P2 — 12 ha</option></select></label>
+          <label class="field"><span data-i18n="eau.duree">Durée (h)</span><input type="number" id="irrH" value="4" min="0.5" step="0.5" inputmode="decimal"></label>
+        </div>
+        <button class="btn btn-primary" id="irrBtn" type="button" style="margin-top:12px" data-i18n="eau.inscrire">Inscrire au registre</button>
+      </div>
+    </section>
+
+    <!-- ════════ JOURNAL ════════ -->
+    <section class="view" id="v-journal" hidden>
+      <div class="card col">
+        <div class="spread">
+          <div>
+            <p class="eyebrow" data-i18n="jour.eyebrow">Registre</p>
+            <h2 class="sec" data-i18n="jour.t">Traçable, jamais effaçable</h2>
+          </div>
+          <span class="chip ok" id="countChip">0</span>
+        </div>
+        <p class="tiny" data-i18n="jour.p">Chaque ligne est écrite une fois. Une erreur se corrige en ajoutant une ligne, jamais en effaçant.</p>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm" id="copyJson" type="button" data-i18n="jour.json">Copier en JSON</button>
+        </div>
+      </div>
+
+      <div class="card col">
+        <h3 class="sub" data-i18n="note.t">Ajouter une note de terrain</h3>
+        <textarea id="noteTxt" data-i18n-ph="note.ph" placeholder="Ce que vous avez vu, fait ou demandé…"></textarea>
+        <div class="capt">
+          <button class="btn btn-ghost" id="photoBtn" type="button">📷 <span data-i18n="note.photo">Photo</span></button>
+          <button class="btn btn-rec" id="recBtn" type="button">● <span id="recLabel" data-i18n="note.voice">Note vocale</span></button>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
+        <div class="preview" id="preview" hidden></div>
+        <p class="tiny" id="permNote" hidden></p>
+        <button class="btn btn-primary" id="noteSave" type="button" data-i18n="note.save">Inscrire au registre</button>
+      </div>
+
+      <div id="journalList" class="col"></div>
+    </section>
+
+    <!-- ════════ BUREAU ════════ -->
+    <section class="view" id="v-bureau" hidden>
+      <div class="card">
+        <p class="eyebrow" data-i18n="bur.eyebrow">Transmettre</p>
+        <h2 class="sec" data-i18n="bur.t">Bureau</h2>
+        <p class="muted" style="margin-top:5px" data-i18n="bur.p">Le carnet fabrique le document, vous choisissez à qui il part : Hicham, sa femme, ou Mohamed pour le va‑et‑vient.</p>
+      </div>
+      <div class="col">
+        <button class="doc" type="button" data-doc="rapport">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5"/></svg></div>
+          <div><div class="t" data-i18n="doc.rap">Rapport du jour</div><div class="d" data-i18n="doc.rap2">Ce qui a été fait, par qui, sur quelle parcelle</div></div><span class="arr">›</span></button>
+        <button class="doc" type="button" data-doc="registre">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3h14v18H5z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></div>
+          <div><div class="t" data-i18n="doc.reg">Registre des traitements</div><div class="d" data-i18n="doc.reg2">Produit, dose, surface, opérateur, horodatage</div></div><span class="arr">›</span></button>
+        <button class="doc" type="button" data-doc="materiel">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h13v10H3z"/><path d="M16 10h3l2 3v4h-5z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+          <div><div class="t" data-i18n="doc.mat">Demande de matériel</div><div class="d" data-i18n="doc.mat2">Pour Mohamed, à déposer au prochain passage</div></div><span class="arr">›</span></button>
+        <button class="doc" type="button" data-doc="heures">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 5v6M14 8h6"/></svg></div>
+          <div><div class="t" data-i18n="doc.heu">Feuille d'heures</div><div class="d" data-i18n="doc.heu2">Base des payes apportées par Mohamed</div></div><span class="arr">›</span></button>
+      </div>
+      <div id="docBox" hidden>
+        <div class="spread" style="margin:4px 2px 8px">
+          <h3 class="sub" id="docTitle">Document</h3>
+          <button class="btn btn-ghost btn-sm" id="copyDoc" type="button" data-i18n="copier">Copier</button>
+        </div>
+        <div class="out" id="docOut"></div>
+        <p class="tiny" style="margin-top:8px" data-i18n="bur.note">Collez-le dans WhatsApp ou un mail.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" role="tablist">
+    <button class="tab" type="button" role="tab" aria-selected="true" data-view="cuve">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 4h12l-1 5a5 5 0 01-10 0z"/><path d="M12 9v11M8 20h8"/></svg><span data-i18n="tab.cuve">Cuve</span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="parcelles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v16M9 4v16M15 4v16M20 4v16"/><path d="M3 12h18"/></svg><span data-i18n="tab.parc">Parcelles</span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="eau">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3s6 6.4 6 10.4A6 6 0 016 13.4C6 9.4 12 3 12 3z"/></svg><span data-i18n="tab.eau">Eau</span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="journal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h13v16H5z"/><path d="M5 8h13"/><path d="M9 12h6M9 16h4"/></svg><span data-i18n="tab.jour">Journal</span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="bureau">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 8h18v12H3z"/><path d="M9 8V5h6v3"/><path d="M3 13h18"/></svg><span data-i18n="tab.bur">Bureau</span></button>
+  </nav>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+
+  /* ═════════ traductions ═════════ */
+  const T = {
+    fr:{
+      'app.name':"Carnet Bouzelmate Hicham",'app.sub':"Vigne de table · 22 ha",
+      'tab.cuve':"Cuve",'tab.parc':"Parcelles",'tab.eau':"Eau",'tab.jour':"Journal",'tab.bur':"Bureau",
+      'meteo.title':"Conditions du moment",'meteo.wind':"Vent",'meteo.hum':"Humidité",'meteo.rain':"Pluie",
+      'meteo.locate':"Localiser",'meteo.ok':"Conditions favorables au traitement",
+      'meteo.mid':"Vent limite — pulvérisez tôt le matin",'meteo.no':"Vent trop fort — traitement déconseillé",
+      'meteo.rainy':"Pluie en cours — reportez le traitement",
+      'meteo.demo':"Exemple — appuyez pour localiser",'meteo.off':"Réseau indisponible — valeurs d'exemple",
+      'step.1':"Étape 1",'step.2':"Étape 2",'step.3':"Étape 3 — à verser dans la cuve",
+      'cuve.q':"Quel produit dans la cuve ?",'cuve.mat':"Le matériel et la surface",
+      'galerie':"Galerie",'armoire.note':"Mon armoire — les produits de l'exploitation.",
+      'f.cuve':"Cuve",'f.volha':"Bouillie / ha",'f.surf':"Surface à traiter",'f.parc':"Parcelle",
+      'f.nb':"Nb de rangs",'f.lg':"Longueur (m)",
+      'mode.ha':"Surface en ha",'mode.rangs':"Compter les rangs",
+      'tip.vol':"Le volume de bouillie/ha se mesure une fois par saison, à l'eau claire, sur quelques rangs mesurés. Il change avec la vitesse, la pression, les buses et le feuillage.",
+      'm.ha':"Ha / cuve",'m.cuves':"Cuves",'m.tot':"Total produit",
+      'lock.t':"Résultat verrouillé",'lock.p':"Confirmez le bidon que vous avez en main pour afficher la quantité à verser.",
+      'gate.t':"Vous avez bien ce produit en main ?",'gate.p':"La confirmation est horodatée à votre nom et inscrite au registre.",
+      'gate.ask':"Recopiez le code lu sur l'étiquette du bidon :",
+      'gate.check':"J'ai lu l'étiquette, je porte les EPI indiqués et je respecte le délai avant récolte.",
+      'gate.btn':"Je confirme et je verse",
+      'footnote':"L'application calcule à partir de la fiche produit. Elle ne prescrit pas : la dose qui fait foi reste celle de l'étiquette.",
+      'parc.eyebrow':"Domaine",'parc.t':"Deux parcelles, un seul bassin",'parc.puits':"Puits",'parc.bassin':"Bassin",
+      'parc.dispo':"Disposition des variétés",'aconfirmer':"à confirmer",
+      'leg.blanc':"● Blanc — extérieur",'leg.noir':"● Noir — intérieur",'leg.fruit':"● Fruitiers — bordure",
+      'parc.ecart':"Écartement enregistré par parcelle",
+      'parc.ecartnote':"Mesuré une fois au décamètre. Le calcul de cuve l'utilise automatiquement — sur le terrain, il n'y a plus que le nombre de rangs et la longueur à saisir.",
+      'parc.var':"Variétés",'var.noir':"Noir · gros calibre · marché local",'var.blanc':"Blanc · gros calibre · marché local",
+      'var.note':"Noms d'exemple — à remplacer par les variétés réelles.",
+      'parc.prot':"Protections en place",'prot.grill':"Grillage anti-tempête",'prot.grill2':"Périmètre complet",
+      'prot.bache':"Bâches anti-pluie",'prot.bache2':"Risque de pourriture des grappes",'pose':"posé",
+      'eau.eyebrow':"Bassin partagé P1 + P2",'eau.t':"Niveau du bassin",'eau.puits':"Les trois puits",
+      'eau.puitsnote':"Appuyez sur un puits pour changer son état.",
+      'eau.energie':"Source d'énergie",'eau.sol':"☀ Panneaux solaires",'eau.gaz':"Bouteilles de gaz",
+      'eau.solnote':"Extraction au solaire — pas de consommation de gaz aujourd'hui.",
+      'eau.gaznote':"Moteur sur bouteilles de gaz — noter le nombre de bouteilles consommées.",
+      'eau.noter':"Noter un arrosage",'eau.duree':"Durée (h)",'eau.inscrire':"Inscrire au registre",
+      'on':"en marche",'off':"à l'arrêt",
+      'jour.eyebrow':"Registre",'jour.t':"Traçable, jamais effaçable",
+      'jour.p':"Chaque ligne est écrite une fois. Une erreur se corrige en ajoutant une ligne, jamais en effaçant.",
+      'jour.json':"Copier en JSON",'jour.empty':"Le registre est vide. Chaque traitement confirmé, chaque arrosage et chaque note viendront s'écrire ici.",
+      'note.t':"Ajouter une note de terrain",'note.ph':"Ce que vous avez vu, fait ou demandé…",
+      'note.photo':"Photo",'note.voice':"Note vocale",'note.stop':"Arrêter",'note.save':"Inscrire au registre",
+      'note.nomic':"Micro indisponible ici — il fonctionnera une fois l'app installée sur le téléphone.",
+      'note.nocam':"Appareil photo indisponible ici — il fonctionnera une fois l'app installée.",
+      'note.vide':"Écrivez une note, prenez une photo ou enregistrez la voix.",
+      'note.titre':"Note de terrain",
+      'bur.eyebrow':"Transmettre",'bur.t':"Bureau",
+      'bur.p':"Le carnet fabrique le document, vous choisissez à qui il part : Hicham, sa femme, ou Mohamed pour le va-et-vient.",
+      'doc.rap':"Rapport du jour",'doc.rap2':"Ce qui a été fait, par qui, sur quelle parcelle",
+      'doc.reg':"Registre des traitements",'doc.reg2':"Produit, dose, surface, opérateur, horodatage",
+      'doc.mat':"Demande de matériel",'doc.mat2':"Pour Mohamed, à déposer au prochain passage",
+      'doc.heu':"Feuille d'heures",'doc.heu2':"Base des payes apportées par Mohamed",
+      'copier':"Copier",'bur.note':"Collez-le dans WhatsApp ou un mail.",
+      'role.resp':"Responsable",'role.hicham':"Hicham",'role.moh':"Mohamed",
+      'tst.resp':"Vue terrain — le responsable",'tst.hicham':"Vue propriétaire — Hicham",'tst.moh':"Vue logistique — Mohamed",
+      'tst.conf':"Confirmé et inscrit au registre",'tst.irr':"Arrosage inscrit",'tst.note':"Note inscrite au registre",
+      'tst.copy':"Copié",'tst.nocopy':"Copie impossible — sélectionnez le texte",'tst.gal':"Galerie ONSSA — à brancher",
+      'tst.heavy':"Registre enregistré sans les pièces jointes (mémoire du téléphone pleine)",
+      'ligne':"ligne",'lignes':"lignes",'validepar':"validé par",'horsvigne':"hors vigne",
+      'bloc':"Calcul bloqué.",'bloc2':"n'est pas homologué sur vigne. Choisissez un autre produit ou vérifiez la fiche.",
+      'nonauto':"usage non autorisé sur vigne",'soit':"Soit","dans":"dans la cuve de",ّ:"",
+      'dar':"délai avant récolte",'jours':"j",'traitement':"Traitement",'arrosage':"Arrosage"
+    },
+    ar:{
+      'app.name':"دفتر بوزلمات هشام",'app.sub':"عنب المائدة · 22 هكتار",
+      'tab.cuve':"الخزان",'tab.parc':"القطع",'tab.eau':"الماء",'tab.jour':"السجل",'tab.bur':"المكتب",
+      'meteo.title':"أحوال الطقس الآن",'meteo.wind':"الريح",'meteo.hum':"الرطوبة",'meteo.rain':"المطر",
+      'meteo.locate':"تحديد الموقع",'meteo.ok':"الظروف مناسبة للمعالجة",
+      'meteo.mid':"الريح على الحد — رشّوا باكرًا",'meteo.no':"الريح قوية — المعالجة غير منصوح بها",
+      'meteo.rainy':"مطر الآن — أجّلوا المعالجة",
+      'meteo.demo':"مثال — اضغط لتحديد الموقع",'meteo.off':"لا يوجد اتصال — قيم مثال",
+      'step.1':"الخطوة 1",'step.2':"الخطوة 2",'step.3':"الخطوة 3 — ما يُسكب في الخزان",
+      'cuve.q':"أي منتج في الخزان؟",'cuve.mat':"المعدات والمساحة",
+      'galerie':"المعرض",'armoire.note':"خزانتي — منتجات الضيعة.",
+      'f.cuve':"الخزان",'f.volha':"المحلول / هكتار",'f.surf':"المساحة المعالجة",'f.parc':"القطعة",
+      'f.nb':"عدد الصفوف",'f.lg':"الطول (م)",
+      'mode.ha':"المساحة بالهكتار",'mode.rangs':"عدّ الصفوف",
+      'tip.vol':"حجم المحلول لكل هكتار يُقاس مرة في الموسم بالماء الصافي على بضعة صفوف مقيسة. يتغير حسب السرعة والضغط والبخاخات وكثافة الأوراق.",
+      'm.ha':"هكتار / خزان",'m.cuves':"الخزانات",'m.tot':"مجموع المنتج",
+      'lock.t':"النتيجة مقفلة",'lock.p':"أكّد العبوة التي بين يديك لإظهار الكمية.",
+      'gate.t':"هل هذا المنتج بين يديك؟",'gate.p':"التأكيد يُسجَّل باسمك وبالتاريخ والساعة في السجل.",
+      'gate.ask':"اكتب الرمز الموجود على ملصق العبوة:",
+      'gate.check':"قرأت الملصق، ألبس معدات الوقاية، وأحترم المدة قبل الجني.",
+      'gate.btn':"أؤكد وأسكب",
+      'footnote':"التطبيق يحسب انطلاقًا من بطاقة المنتج. لا يصف ولا يعوّض الملصق: الجرعة المعتمدة هي جرعة الملصق.",
+      'parc.eyebrow':"الضيعة",'parc.t':"قطعتان وحوض واحد",'parc.puits':"الآبار",'parc.bassin':"الحوض",
+      'parc.dispo':"توزيع الأصناف",'aconfirmer':"للتأكيد",
+      'leg.blanc':"● أبيض — الخارج",'leg.noir':"● أسود — الداخل",'leg.fruit':"● أشجار مثمرة — الحدود",
+      'parc.ecart':"المسافة بين الصفوف المسجلة لكل قطعة",
+      'parc.ecartnote':"تُقاس مرة واحدة بالشريط. الحساب يستعملها تلقائيًا — في الحقل يكفي إدخال عدد الصفوف والطول.",
+      'parc.var':"الأصناف",'var.noir':"أسود · حبة كبيرة · السوق المحلي",'var.blanc':"أبيض · حبة كبيرة · السوق المحلي",
+      'var.note':"أسماء للمثال — تُستبدل بالأصناف الحقيقية.",
+      'parc.prot':"وسائل الحماية",'prot.grill':"شبكة ضد العاصفة",'prot.grill2':"المحيط كامل",
+      'prot.bache':"أغطية ضد المطر",'prot.bache2':"خطر تعفن العناقيد",'pose':"موضوع",
+      'eau.eyebrow':"حوض مشترك ق1 + ق2",'eau.t':"مستوى الحوض",'eau.puits':"الآبار الثلاثة",
+      'eau.puitsnote':"اضغط على بئر لتغيير حالته.",
+      'eau.energie':"مصدر الطاقة",'eau.sol':"☀ ألواح شمسية",'eau.gaz':"قنينات الغاز",
+      'eau.solnote':"الضخ بالطاقة الشمسية — بدون استهلاك غاز اليوم.",
+      'eau.gaznote':"المحرك يشتغل بالغاز — سجّل عدد القنينات المستهلكة.",
+      'eau.noter':"تسجيل سقي",'eau.duree':"المدة (س)",'eau.inscrire':"تسجيل في السجل",
+      'on':"يشتغل",'off':"متوقف",
+      'jour.eyebrow':"السجل",'jour.t':"قابل للتتبع، لا يُمحى",
+      'jour.p':"كل سطر يُكتب مرة واحدة. الخطأ يُصحَّح بإضافة سطر، لا بالمحو.",
+      'jour.json':"نسخ JSON",'jour.empty':"السجل فارغ. كل معالجة مؤكدة وكل سقي وكل ملاحظة ستُكتب هنا.",
+      'note.t':"إضافة ملاحظة من الحقل",'note.ph':"ما رأيته أو فعلته أو طلبته…",
+      'note.photo':"صورة",'note.voice':"ملاحظة صوتية",'note.stop':"إيقاف",'note.save':"تسجيل في السجل",
+      'note.nomic':"الميكروفون غير متاح هنا — سيشتغل بعد تثبيت التطبيق في الهاتف.",
+      'note.nocam':"الكاميرا غير متاحة هنا — ستشتغل بعد تثبيت التطبيق.",
+      'note.vide':"اكتب ملاحظة أو التقط صورة أو سجّل صوتًا.",
+      'note.titre':"ملاحظة من الحقل",
+      'bur.eyebrow':"الإرسال",'bur.t':"المكتب",
+      'bur.p':"الدفتر يُعدّ الوثيقة، وأنت تختار لمن تُرسل: هشام، أو زوجته، أو محمد عند مروره.",
+      'doc.rap':"تقرير اليوم",'doc.rap2':"ما أُنجز، ومن أنجزه، وفي أي قطعة",
+      'doc.reg':"سجل المعالجات",'doc.reg2':"المنتج، الجرعة، المساحة، المنفذ، التاريخ والساعة",
+      'doc.mat':"طلب معدات",'doc.mat2':"لمحمد، ليجلبها في المرور القادم",
+      'doc.heu':"ورقة ساعات العمل",'doc.heu2':"أساس الأجور التي يسلمها محمد",
+      'copier':"نسخ",'bur.note':"الصقها في واتساب أو البريد.",
+      'role.resp':"المسؤول",'role.hicham':"هشام",'role.moh':"محمد",
+      'tst.resp':"عرض الحقل — المسؤول",'tst.hicham':"عرض المالك — هشام",'tst.moh':"عرض اللوجستيك — محمد",
+      'tst.conf':"تم التأكيد والتسجيل",'tst.irr':"تم تسجيل السقي",'tst.note':"تم تسجيل الملاحظة",
+      'tst.copy':"تم النسخ",'tst.nocopy':"النسخ غير ممكن — حدّد النص",'tst.gal':"معرض ONSSA — سيُربط لاحقًا",
+      'tst.heavy':"سُجّل بدون المرفقات (ذاكرة الهاتف ممتلئة)",
+      'ligne':"سطر",'lignes':"سطر",'validepar':"أكّده",'horsvigne':"خارج الكرم",
+      'bloc':"الحساب موقوف.",'bloc2':"غير مرخّص على الكرم. اختر منتجًا آخر أو راجع البطاقة.",
+      'nonauto':"استعمال غير مرخّص على الكرم",'soit':"أي",'dans':"في خزان",
+      'dar':"المدة قبل الجني",'jours':"ي",'traitement':"معالجة",'arrosage':"سقي"
+    }
+  };
+
+  let LANG = 'fr';
+  const t = k => (T[LANG] && T[LANG][k]) || T.fr[k] || k;
+
+  /* ═════════ produits ═════════ */
+  const PRODUITS = [
+    {id:'p1', nom:'Soufre mouillable 80%', nomAr:'كبريت قابل للبلل 80%', ma:'Soufre 800 g/kg', dose:6,   unit:'kg/ha',  dar:5,  vigne:true,  col:'#C9A227', epi:'Gants + masque'},
+    {id:'p2', nom:'Bouillie bordelaise',   nomAr:'ماء بوردو',          ma:'Cuivre 200 g/kg', dose:5,   unit:'kg/ha',  dar:21, vigne:true,  col:'#3E86A6', epi:'Gants + combinaison'},
+    {id:'p3', nom:'Hydroxyde de cuivre',   nomAr:'هيدروكسيد النحاس',    ma:'Cuivre 500 g/kg', dose:2,   unit:'kg/ha',  dar:21, vigne:true,  col:'#2F7A8F', epi:'Gants + masque'},
+    {id:'p4', nom:'Huile de paraffine',    nomAr:'زيت البارافين',       ma:'Paraffine 800 g/L', dose:10,unit:'L/ha',   dar:30, vigne:true,  col:'#7A6A55', epi:'Gants'},
+    {id:'p5', nom:'Anti-oïdium démo',      nomAr:'مضاد البياض (مثال)',  ma:'à renseigner',    dose:200, unit:'mL/hL',  dar:14, vigne:true,  col:'#9A4EC0', epi:'Gants + masque'},
+    {id:'p6', nom:'Herbicide céréales',    nomAr:'مبيد أعشاب الحبوب',   ma:'à renseigner',    dose:1.5, unit:'L/ha',   dar:0,  vigne:false, col:'#B23A26', epi:'Gants + visière'}
+  ];
+  const pname = p => LANG === 'ar' ? p.nomAr : p.nom;
+
+  const ROLEKEYS = ['role.resp','role.hicham','role.moh'];
+  const TSTKEYS  = ['tst.resp','tst.hicham','tst.moh'];
+  let roleIdx = 0;
+
+  const S = {
+    prod: PRODUITS[0], cuve:1000, volHa:600, mode:'ha', surfHa:10,
+    confirmed:true, journal:[], size:0,
+    pendingPhoto:null, pendingAudio:null
+  };
+  const SIZES = [1, 1.13, 1.28], SIZELAB = ['A','A+','A++'];
+
+  const fmt = (n,d=2) => isFinite(n) ? (Math.round(n*10**d)/10**d).toLocaleString('fr-FR',{maximumFractionDigits:d}) : '—';
+  const now = () => new Date().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  let toastT;
+  function toast(msg){
+    const el = $('toast'); el.textContent = msg; el.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(()=>el.classList.remove('show'), 2600);
+  }
+
+  /* ═════════ stockage ═════════ */
+  const KEY = 'carnet-bouzelmate-v2';
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(S.journal)); }
+    catch(e){
+      try{
+        const light = S.journal.map(x => {const y=Object.assign({},x); delete y.photo; delete y.audio; return y;});
+        localStorage.setItem(KEY, JSON.stringify(light));
+        toast(t('tst.heavy'));
+      }catch(e2){}
+    }
+  }
+  function loadStore(){
+    try{ const r = localStorage.getItem(KEY); if(r) S.journal = JSON.parse(r) || []; }catch(e){}
+    try{
+      LANG = localStorage.getItem(KEY+'-lang') || 'fr';
+      S.size = parseInt(localStorage.getItem(KEY+'-size') || '0', 10) || 0;
+    }catch(e){}
+  }
+  function savePref(){
+    try{ localStorage.setItem(KEY+'-lang', LANG); localStorage.setItem(KEY+'-size', String(S.size)); }catch(e){}
+  }
+
+  /* ═════════ langue et taille ═════════ */
+  function applyLang(){
+    const app = $('app');
+    app.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPh); });
+    $('langBtn').textContent = LANG === 'ar' ? 'FR' : 'ع';
+    $('roleLabel').textContent = t(ROLEKEYS[roleIdx]);
+    $('enNote').textContent = $('enSol').getAttribute('aria-pressed') === 'true' ? t('eau.solnote') : t('eau.gaznote');
+    document.querySelectorAll('#puits .puit').forEach(p=>{ p.querySelector('.s').textContent = p.dataset.on === '1' ? t('on') : t('off'); });
+    $('recLabel').textContent = rec && rec.state === 'recording' ? t('note.stop') : t('note.voice');
+    renderArmoire(); renderJournal(); compute(); paintMeteo();
+  }
+  function applySize(){
+    document.documentElement.style.setProperty('--s', String(SIZES[S.size]));
+    $('sizeBtn').textContent = SIZELAB[S.size];
+  }
+
+  /* ═════════ météo ═════════ */
+  const M = {temp:27, wind:11, hum:48, rain:0, place:null, demo:true};
+  function paintMeteo(){
+    $('mTemp').textContent = Math.round(M.temp) + '°';
+    $('mWind').textContent = Math.round(M.wind) + ' km/h';
+    $('mHum').textContent  = Math.round(M.hum) + ' %';
+    $('mRain').textContent = fmt(M.rain,1) + ' mm';
+    $('mPlace').textContent = M.demo ? t('meteo.demo') : (M.place || '—');
+    const v = $('mVerdict');
+    let cls, key, ic;
+    if(M.rain > 0.2){ cls='no';  key='meteo.rainy'; ic='✕'; }
+    else if(M.wind > 19){ cls='no';  key='meteo.no';  ic='✕'; }
+    else if(M.wind > 12){ cls='mid'; key='meteo.mid'; ic='!'; }
+    else { cls='go'; key='meteo.ok'; ic='✓'; }
+    v.className = 'verdict ' + cls;
+    v.innerHTML = '<span>'+ic+'</span><span>'+t(key)+'</span>';
+  }
+  function fetchMeteo(lat, lon, label){
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+
+      '&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&timezone=auto';
+    fetch(url).then(r=>r.json()).then(d=>{
+      const c = d.current;
+      M.temp = c.temperature_2m; M.wind = c.wind_speed_10m;
+      M.hum = c.relative_humidity_2m; M.rain = c.precipitation;
+      M.place = label || (fmt(lat,3)+', '+fmt(lon,3)); M.demo = false;
+      paintMeteo();
+    }).catch(()=>{ M.demo = true; $('mPlace').textContent = t('meteo.off'); });
+  }
+  $('mBtn').addEventListener('click', ()=>{
+    if(!navigator.geolocation){ $('mPlace').textContent = t('meteo.off'); return; }
+    navigator.geolocation.getCurrentPosition(
+      p => fetchMeteo(p.coords.latitude.toFixed(3), p.coords.longitude.toFixed(3), null),
+      () => { M.demo = true; $('mPlace').textContent = t('meteo.off'); },
+      {timeout:8000}
+    );
+  });
+
+  /* ═════════ armoire ═════════ */
+  function renderArmoire(){
+    const box = $('armoire'); box.innerHTML = '';
+    PRODUITS.forEach(p=>{
+      const b = document.createElement('button');
+      b.type='button'; b.className='prod';
+      b.setAttribute('aria-pressed', String(p.id === S.prod.id));
+      b.innerHTML = '<div class="stripe" style="background:'+p.col+'"></div>'+
+        '<div class="pn">'+pname(p)+'</div><div class="pm">'+p.ma+'</div>'+
+        '<div class="pd">'+p.dose+' '+p.unit+'</div>'+
+        (p.vigne ? '' : '<span class="chip danger" style="align-self:flex-start">'+t('horsvigne')+'</span>');
+      b.addEventListener('click', ()=>{ S.prod=p; S.confirmed=false; renderArmoire(); compute(); });
+      box.appendChild(b);
+    });
+  }
+
+  /* ═════════ calcul ═════════ */
+  function ecartement(){
+    const p = $('parcelle').value;
+    return Number(p === 'P2' ? $('ecP2').value : $('ecP1').value) || 3;
+  }
+  function surface(){
+    if(S.mode === 'ha') return Number($('surfHa').value) || 0;
+    const n = Number($('nbRangs').value)||0, l = Number($('lgRang').value)||0;
+    return (n*l*ecartement())/10000;
+  }
+
+  function compute(){
+    S.cuve = Number($('cuve').value)||1000;
+    S.volHa = Number($('volHa').value)||1;
+    const surf = surface();
+
+    if(S.mode === 'rangs'){
+      $('rangsCalc').innerHTML = t('soit')+' <b>'+fmt(surf,2)+' ha</b> — '+
+        (LANG==='ar'?'المسافة بين الصفوف ':'écartement ')+fmt(ecartement(),1)+' m';
+    }
+
+    const ab = $('blockAlert');
+    if(!S.prod.vigne){
+      ab.innerHTML = '<div class="alert block"><span class="ic">✕</span><div><b>'+t('bloc')+'</b> '+pname(S.prod)+' '+t('bloc2')+'</div></div>';
+      $('resProd').textContent = pname(S.prod);
+      $('resQty').textContent = '—'; $('resUnit').textContent = '';
+      $('resInto').textContent = t('nonauto');
+      $('mHa').textContent='—'; $('mCuves').textContent='—'; $('mTot').textContent='—';
+      $('result').classList.remove('locked'); $('lockface').hidden = true; $('gate').hidden = true;
+      return;
+    }
+    ab.innerHTML = '';
+
+    const haParCuve = S.cuve / S.volHa;
+    const nbCuves = surf > 0 ? Math.ceil(surf/haParCuve) : 0;
+    let parCuve, unitCuve, total, unitTot;
+
+    if(S.prod.unit === 'mL/hL' || S.prod.unit === 'g/hL'){
+      const base = S.prod.unit === 'mL/hL' ? 'mL' : 'g';
+      parCuve = S.prod.dose * (S.cuve/100); unitCuve = base;
+      if(parCuve >= 1000){ parCuve /= 1000; unitCuve = base === 'mL' ? 'L' : 'kg'; }
+      total = S.prod.dose * (surf*S.volHa/100); unitTot = base;
+      if(total >= 1000){ total /= 1000; unitTot = base === 'mL' ? 'L' : 'kg'; }
+    }else{
+      parCuve = S.prod.dose * haParCuve; unitCuve = S.prod.unit.split('/')[0];
+      total = S.prod.dose * surf; unitTot = unitCuve;
+    }
+
+    $('resProd').textContent = pname(S.prod)+' · '+S.prod.dose+' '+S.prod.unit;
+    $('resQty').textContent = fmt(parCuve,2);
+    $('resUnit').textContent = unitCuve;
+    $('resInto').textContent = t('dans')+' '+S.cuve+' L — '+t('dar')+' '+S.prod.dar+' '+t('jours');
+    $('mHa').textContent = fmt(haParCuve,2);
+    $('mCuves').textContent = nbCuves || '—';
+    $('mTot').textContent = fmt(total,1)+' '+unitTot;
+
+    const locked = !S.confirmed;
+    $('result').classList.toggle('locked', locked);
+    $('lockface').hidden = !locked;
+    $('gate').hidden = !locked;
+    if(locked){
+      $('gateName').textContent = pname(S.prod);
+      $('gateDose').textContent = S.prod.ma+' — '+S.prod.dose+' '+S.prod.unit+' · EPI : '+S.prod.epi;
+      $('bidonBand').style.background = S.prod.col;
+      const code = S.prod.nom.replace(/[^A-Za-z]/g,'').slice(0,4).toUpperCase();
+      $('codebox').textContent = code;
+      const gi = $('gateInput');
+      gi.dataset.code = code; gi.value = ''; gi.classList.remove('good');
+      $('gateCheck').checked = false; $('gateBtn').disabled = true;
+    }
+  }
+
+  function gateState(){
+    const gi = $('gateInput');
+    const match = gi.value.trim().toUpperCase() === gi.dataset.code;
+    gi.classList.toggle('good', match);
+    $('gateBtn').disabled = !(match && $('gateCheck').checked);
+  }
+
+  /* ═════════ journal ═════════ */
+  function addEntry(e){
+    S.journal.unshift(Object.assign({ts:now(), par:t(ROLEKEYS[roleIdx])}, e));
+    save(); renderJournal();
+  }
+  function renderJournal(){
+    const box = $('journalList');
+    const n = S.journal.length;
+    $('countChip').textContent = n+' '+(n>1 ? t('lignes') : t('ligne'));
+    if(!n){ box.innerHTML = '<div class="card empty">'+t('jour.empty')+'</div>'; return; }
+    box.innerHTML = '';
+    S.journal.forEach(e=>{
+      const d = document.createElement('div');
+      d.className = 'entry '+(e.type||'');
+      let h = '<div class="when">'+e.ts+'</div><div class="what">'+e.titre+'</div>';
+      if(e.detail) h += '<div class="det">'+e.detail+'</div>';
+      if(e.photo)  h += '<img class="shot" src="'+e.photo+'" alt="">';
+      if(e.audio)  h += '<audio controls src="'+e.audio+'"></audio>';
+      h += '<div class="sig">'+t('validepar')+' '+e.par+'</div>';
+      d.innerHTML = h;
+      box.appendChild(d);
+    });
+  }
+
+  /* ═════════ photo ═════════ */
+  $('photoBtn').addEventListener('click', ()=> $('photoInput').click());
+  $('photoInput').addEventListener('change', ev=>{
+    const f = ev.target.files && ev.target.files[0];
+    if(!f){ return; }
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 900, sc = Math.min(1, max/Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width*sc); c.height = Math.round(img.height*sc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        S.pendingPhoto = c.toDataURL('image/jpeg', 0.62);
+        renderPreview();
+      };
+      img.onerror = () => { S.pendingPhoto = fr.result; renderPreview(); };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(f);
+  });
+
+  /* ═════════ note vocale ═════════ */
+  let rec = null, chunks = [];
+  $('recBtn').addEventListener('click', async ()=>{
+    if(rec && rec.state === 'recording'){ rec.stop(); return; }
+    if(!navigator.mediaDevices || !window.MediaRecorder){
+      $('permNote').hidden = false; $('permNote').textContent = t('note.nomic'); return;
+    }
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      chunks = []; rec = new MediaRecorder(stream);
+      rec.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+      rec.onstop = () => {
+        stream.getTracks().forEach(tr=>tr.stop());
+        const blob = new Blob(chunks, {type: rec.mimeType || 'audio/webm'});
+        const fr = new FileReader();
+        fr.onload = () => { S.pendingAudio = fr.result; renderPreview(); };
+        fr.readAsDataURL(blob);
+        $('recBtn').classList.remove('on'); $('recLabel').textContent = t('note.voice');
+      };
+      rec.start();
+      $('recBtn').classList.add('on'); $('recLabel').textContent = t('note.stop');
+      $('permNote').hidden = true;
+      setTimeout(()=>{ if(rec && rec.state === 'recording') rec.stop(); }, 120000);
+    }catch(err){
+      $('permNote').hidden = false; $('permNote').textContent = t('note.nomic');
+    }
+  });
+
+  function renderPreview(){
+    const p = $('preview'); p.innerHTML = '';
+    p.hidden = !(S.pendingPhoto || S.pendingAudio);
+    if(S.pendingPhoto){ const i = new Image(); i.src = S.pendingPhoto; i.alt=''; p.appendChild(i); }
+    if(S.pendingAudio){ const a = document.createElement('audio'); a.controls = true; a.src = S.pendingAudio; p.appendChild(a); }
+  }
+
+  $('noteSave').addEventListener('click', ()=>{
+    const txt = $('noteTxt').value.trim();
+    if(!txt && !S.pendingPhoto && !S.pendingAudio){ toast(t('note.vide')); return; }
+    addEntry({type:'note', titre:t('note.titre'), detail:txt, photo:S.pendingPhoto, audio:S.pendingAudio});
+    $('noteTxt').value=''; S.pendingPhoto=null; S.pendingAudio=null; renderPreview();
+    toast(t('tst.note'));
+  });
+
+  /* ═════════ documents ═════════ */
+  function buildDoc(kind){
+    const d = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const trt = S.journal.filter(e => e.type === 'trt');
+    const puitsOn = document.querySelectorAll('#puits .puit[data-on="1"]').length;
+    const energie = $('enSol').getAttribute('aria-pressed') === 'true' ? 'panneaux solaires' : 'bouteilles de gaz';
+    if(kind === 'rapport'){
+      return 'RAPPORT DU JOUR — '+d+
+        '\nDomaine Bouzelmate — vigne de table · P1 10 ha + P2 12 ha'+
+        '\nÉtabli par : '+t(ROLEKEYS[roleIdx])+
+        '\n\nTRAVAUX\n'+(S.journal.length ? S.journal.slice(0,6).map(e=>'· '+e.titre+(e.detail?' — '+e.detail:'')).join('\n') : '· (aucune saisie)')+
+        '\n\nMÉTÉO\n· '+Math.round(M.temp)+' °C · vent '+Math.round(M.wind)+' km/h · pluie '+fmt(M.rain,1)+' mm'+
+        '\n\nEAU\n· Bassin : '+$('lvlRange').value+' %\n· Puits en marche : '+puitsOn+' / 3\n· Énergie : '+energie+
+        '\n\nÀ : Hicham · copie Mohamed';
+    }
+    if(kind === 'registre'){
+      return 'REGISTRE DES TRAITEMENTS — '+d+
+        '\nDomaine Bouzelmate — vigne de table, 22 ha\n\n'+
+        (trt.length ? trt.map(e=>e.ts+' | '+e.titre+' | '+e.detail+' | '+t('validepar')+' : '+e.par).join('\n')
+                    : '(aucun traitement enregistré)')+
+        '\n\nRegistre en écriture seule. Toute correction fait l\'objet d\'une ligne supplémentaire.';
+    }
+    if(kind === 'materiel'){
+      return 'DEMANDE DE MATÉRIEL — '+d+
+        '\nPour : Mohamed (prochain passage)\nDe : '+t(ROLEKEYS[roleIdx])+'\n'+
+        '\n□ Raccords goutte-à-goutte 16 mm ...... 30'+
+        '\n□ Filtre à disques (rechange) .......... 1'+
+        '\n□ Buses de pulvérisation ............... 8'+
+        '\n□ Gants nitrile (paires) ............... 10'+
+        '\n□ Sangles pour bâches .................. 20'+
+        '\n\nÀ déposer au local d\'arrosage. Merci.';
+    }
+    return 'FEUILLE D\'HEURES — semaine du '+d+
+      '\nParcelles P1 + P2\n'+
+      '\nÉquipe A — taille .............. 6 ouvriers × 5 j = 30 j'+
+      '\nÉquipe B — pose des bâches ..... 4 ouvriers × 2 j =  8 j'+
+      '\nÉquipe C — éclaircissage ....... 5 ouvriers × 3 j = 15 j'+
+      '\n                                  TOTAL     53 journées'+
+      '\n\nÉtabli par '+t(ROLEKEYS[roleIdx])+' — à valider par Hicham, paye remise par Mohamed.';
+  }
+
+  /* ═════════ navigation ═════════ */
+  const VIEWS = ['cuve','parcelles','eau','journal','bureau'];
+  function show(v){
+    VIEWS.forEach(n => { $('v-'+n).hidden = (n !== v); });
+    document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x.dataset.view === v)));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.tab').forEach(x => x.addEventListener('click', ()=>show(x.dataset.view)));
+
+  /* ═════════ branchements ═════════ */
+  $('langBtn').addEventListener('click', ()=>{ LANG = LANG==='fr' ? 'ar' : 'fr'; savePref(); applyLang(); });
+  $('sizeBtn').addEventListener('click', ()=>{ S.size = (S.size+1)%3; savePref(); applySize(); });
+  $('roleBtn').addEventListener('click', ()=>{
+    roleIdx = (roleIdx+1)%3;
+    $('roleLabel').textContent = t(ROLEKEYS[roleIdx]);
+    toast(t(TSTKEYS[roleIdx]));
+  });
+
+  ['cuve','volHa','surfHa','nbRangs','lgRang','parcelle','ecP1','ecP2'].forEach(id=>{
+    const el = $(id);
+    ['input','change'].forEach(ev => el.addEventListener(ev, ()=>{ S.confirmed=false; compute(); }));
+  });
+
+  $('modeHa').addEventListener('click', ()=>{
+    S.mode='ha'; S.confirmed=false;
+    $('modeHa').setAttribute('aria-pressed','true'); $('modeRangs').setAttribute('aria-pressed','false');
+    $('boxHa').style.display=''; $('boxRangs').hidden=true; $('boxRangs').style.display='none'; compute();
+  });
+  $('modeRangs').addEventListener('click', ()=>{
+    S.mode='rangs'; S.confirmed=false;
+    $('modeRangs').setAttribute('aria-pressed','true'); $('modeHa').setAttribute('aria-pressed','false');
+    $('boxHa').style.display='none'; $('boxRangs').hidden=false; $('boxRangs').style.display='block'; compute();
+  });
+
+  $('gateInput').addEventListener('input', gateState);
+  $('gateCheck').addEventListener('change', gateState);
+  $('gateBtn').addEventListener('click', ()=>{
+    S.confirmed = true;
+    const surf = surface();
+    addEntry({
+      type:'trt',
+      titre: t('traitement')+' — '+pname(S.prod),
+      detail: S.prod.dose+' '+S.prod.unit+' · '+t('f.cuve').toLowerCase()+' '+S.cuve+' L · '+S.volHa+' L/ha · '+
+              fmt(surf,2)+' ha · '+$('resQty').textContent+' '+$('resUnit').textContent+' / '+t('f.cuve').toLowerCase()+
+              ' · '+t('dar')+' '+S.prod.dar+' '+t('jours')+
+              ' · '+Math.round(M.wind)+' km/h'
+    });
+    compute(); toast(t('tst.conf'));
+  });
+
+  $('openGalerie').addEventListener('click', ()=> toast(t('tst.gal')));
+
+  $('lvlRange').addEventListener('input', e=>{
+    $('water').style.height = e.target.value+'%';
+    $('lvlTxt').textContent = e.target.value+' %';
+  });
+  document.querySelectorAll('#puits .puit').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      p.dataset.on = p.dataset.on === '1' ? '0' : '1';
+      p.querySelector('.s').textContent = p.dataset.on === '1' ? t('on') : t('off');
+    });
+  });
+  $('enSol').addEventListener('click', ()=>{
+    $('enSol').setAttribute('aria-pressed','true'); $('enGaz').setAttribute('aria-pressed','false');
+    $('enNote').textContent = t('eau.solnote');
+  });
+  $('enGaz').addEventListener('click', ()=>{
+    $('enGaz').setAttribute('aria-pressed','true'); $('enSol').setAttribute('aria-pressed','false');
+    $('enNote').textContent = t('eau.gaznote');
+  });
+  $('irrBtn').addEventListener('click', ()=>{
+    addEntry({
+      type:'irr',
+      titre: t('arrosage')+' — '+$('irrParc').value,
+      detail: $('irrH').value+' h · '+t('eau.t').toLowerCase()+' '+$('lvlRange').value+' % · '+
+              document.querySelectorAll('#puits .puit[data-on="1"]').length+' '+t('parc.puits').toLowerCase()
+    });
+    toast(t('tst.irr'));
+  });
+
+  function copyText(txt){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(()=>toast(t('tst.copy')), ()=>toast(t('tst.nocopy')));
+    }else toast(t('tst.nocopy'));
+  }
+  $('copyJson').addEventListener('click', ()=>{
+    const light = S.journal.map(x=>{const y=Object.assign({},x); if(y.photo) y.photo='[photo]'; if(y.audio) y.audio='[audio]'; return y;});
+    copyText(JSON.stringify(light,null,2));
+  });
+  document.querySelectorAll('.doc').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      $('docTitle').textContent = b.querySelector('.t').textContent;
+      $('docOut').textContent = buildDoc(b.dataset.doc);
+      $('docBox').hidden = false;
+      $('docBox').scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  });
+  $('copyDoc').addEventListener('click', ()=> copyText($('docOut').textContent));
+
+  /* ═════════ démarrage ═════════ */
+  loadStore();
+  if(!S.journal.length){
+    S.journal = [
+      {ts:'20/09/2026 07:40', par:'Responsable', type:'tache',
+       titre:'Contrôle des grappes — P1', detail:'Rangs 12 à 20 · calibre correct, pas de foyer de pourriture'},
+      {ts:'19/09/2026 16:05', par:'Responsable', type:'irr',
+       titre:'Arrosage — P2 — 12 ha', detail:'5 h · bassin à 81 % · 3 puits · solaire'}
+    ];
+  }
+  applySize();
+  applyLang();
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
