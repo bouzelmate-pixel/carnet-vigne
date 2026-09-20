@@ -1,6 +1,6 @@
 /* Carnet Bouzelmate Hicham — service worker
    Change CACHE à chaque mise à jour de l'app pour forcer le rafraîchissement. */
-const CACHE = 'carnet-bouzelmate-v2';
+const CACHE = 'carnet-bouzelmate-v3';
 
 const SHELL = [
   './',
